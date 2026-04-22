@@ -1,2 +1,2 @@
 # HunterVerse-Setup
-automatize the PPSSPP setup for HunterVerse 
+automatize the PPSSPP setup for HunterVerse - patapon 3
