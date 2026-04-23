@@ -16,6 +16,7 @@ def install_ppsspp_linux():
 def get_ppsspp_config():
     system = platform.system()
     # TODO: boot windows and actually check that the config is there
+
     # WINDOWS
     if system == "Windows":
         windows_default_path = Path(os.environ["USERPROFILE"]) / "Documents/PPSSPP/PSP/SYSTEM/ppsspp.ini"
@@ -31,27 +32,34 @@ def get_ppsspp_config():
     if system == "Linux":
         print("Linux OS detected")
 
-        flatpak_path = Path.home() / ".var/app/org.ppsspp.PPSSPP/config/ppsspp/PSP/SYSTEM/ppsspp.ini"
+        possible_paths = [
+            # Flatpak
+            Path.home() / ".var/app/org.ppsspp.PPSSPP/config/ppsspp/PSP/SYSTEM/ppsspp.ini",
 
-        if flatpak_path.exists():
-            print(f"Found config at {flatpak_path}")
-            return flatpak_path
+            # AppImage
+            Path.home() / ".config/ppsspp/PSP/SYSTEM/ppsspp.ini",
+        ]
 
-        print(f"couldn't find ppsspp's config automatically at {flatpak_path}.")
+        for p in possible_paths:
+            if p.exists():
+                print(f"Found config at {p}")
+                return p
+
+        print("Couldn't find PPSSPP config automatically. Did you open PPSSPP at least once?")
         return ask_path()
-
-    # theorically MacOS is supported: https://hunstermonter.net/directions-mac.php
-    # however i can't be bothered to test it since i will be the only one to use this script anyways
-    raise OSError("this OS is not supported")
+        # theorically MacOS is supported: https://hunstermonter.net/directions-mac.php
+        # however i can't be bothered to test it since i will be the only one to use this script anyways
+        raise OSError("this OS is not supported")
 
 def ask_path():
-    user_path = input("manually insert the path to ppsspp/PSP/SYSTEM/: ").strip()
-    path = Path(user_path)
+    while True:
+        user_path = input("Manually insert the path to PPSSPP/PSP/SYSTEM/: ").strip()
+        path = Path(user_path) / "ppsspp.ini"
 
-    if not path.exists():
-        raise FileNotFoundError("could not find the config file 'ppsspp.ini' in the specified path")
+        if path.is_file():
+            return path
 
-    return path
+        print("Could not find 'ppsspp.ini' in that folder. Try again.")
 
 
 file = get_ppsspp_config()
