@@ -12,7 +12,7 @@ If you’ve ever followed a guide and had to change PPSSPP settings, this just d
 
 ## How to use
 
-1. Download the latest release here
+1. Download python script
 2. Run the script
 3. Enter your nickname
 4. Done
